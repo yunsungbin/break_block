@@ -10,12 +10,17 @@ public class PlayerBall : MonoBehaviour
     public Rigidbody2D rigid;
     //public InGameManager manager;
 
-    private bool goingLeft;
-    private bool goingDown;
-    private bool goingRight;
+    private bool goingLeft; //오른쪽에 맞았을때
+    private bool goingDown; //위에 맞았을때
+    private bool goingRight; //왼쪽에 맞았을때
 
     Camera cam;
     private bool isStop = false;
+    private bool isCopy = false;
+
+    [SerializeField]
+    private GameObject BallRot;
+    float angle;
 
     // Start is called before the first frame update
     void Awake()
@@ -24,6 +29,8 @@ public class PlayerBall : MonoBehaviour
         cam = Camera.main;
         transform.position = new Vector3(0, -3, 0);
         dir = Vector2.down;
+        Instantiate(BallRot, new Vector3(transform.position.x, -2, transform.position.z), Quaternion.identity);
+        BallRot.SetActive(false);
     }
 
     // Update is called once per frame
@@ -37,20 +44,24 @@ public class PlayerBall : MonoBehaviour
 
     void Shot()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
+        {
+            BallRot.SetActive(true);
+            dir = cam.ScreenToWorldPoint(Input.mousePosition);
+        }
+        if (Input.GetMouseButtonUp(0))
         {
             isStop = true;
-            dir = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -cam.transform.position.z));
             gameObject.GetComponent<Rigidbody2D>().AddForce(dir * Speed, ForceMode2D.Impulse);
-            Speed = 1000;
+            Speed = 500;
+            BallRot.SetActive(false);
         }
-        
 
     }
 
     void Movement()
     {
-        rigid.velocity = dir * Speed * Time.deltaTime;
+        rigid.velocity = dir.normalized * Speed * Time.deltaTime * 10;
 
         if (transform.position.x > 5 && !goingLeft)
         {
@@ -69,7 +80,7 @@ public class PlayerBall : MonoBehaviour
             dir = new Vector2(dir.x, -dir.y);
             goingDown = true;
         }
-        if (transform.position.y < -4)
+        if (transform.position.y < -3)
         {
             ResetBall();
         }

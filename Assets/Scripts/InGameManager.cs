@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InGameManager : MonoBehaviour
 {
+
     public int score;
     // Start is called before the first frame update
     void Start()
