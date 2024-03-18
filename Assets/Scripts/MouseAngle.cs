@@ -19,5 +19,10 @@ public class MouseAngle : MonoBehaviour
         angle = Mathf.Atan2(mouse.y - target.y, mouse.x - target.x) * Mathf.Rad2Deg;
 
         this.transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            Destroy(gameObject);
+        }
     }
 }

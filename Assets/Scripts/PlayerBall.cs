@@ -19,7 +19,7 @@ public class PlayerBall : MonoBehaviour
     private bool isCopy = false;
 
     [SerializeField]
-    private GameObject BallRot;
+    private GameObject ballRot;
     float angle;
 
     // Start is called before the first frame update
@@ -29,8 +29,7 @@ public class PlayerBall : MonoBehaviour
         cam = Camera.main;
         transform.position = new Vector3(0, -3, 0);
         dir = Vector2.down;
-        Instantiate(BallRot, new Vector3(transform.position.x, -2, transform.position.z), Quaternion.identity);
-        BallRot.SetActive(false);
+        rigid = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -44,17 +43,20 @@ public class PlayerBall : MonoBehaviour
 
     void Shot()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Instantiate(ballRot, new Vector3(-2, -5, 0), Quaternion.identity);
+        }
         if (Input.GetMouseButton(0))
         {
-            BallRot.SetActive(true);
-            dir = cam.ScreenToWorldPoint(Input.mousePosition);
+            
+            dir = BallRot.dir;
         }
         if (Input.GetMouseButtonUp(0))
         {
             isStop = true;
             gameObject.GetComponent<Rigidbody2D>().AddForce(dir * Speed, ForceMode2D.Impulse);
             Speed = 500;
-            BallRot.SetActive(false);
         }
 
     }
