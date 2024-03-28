@@ -22,6 +22,11 @@ public class PlayerBall : MonoBehaviour
     private GameObject ballRot;
     float angle;
 
+    private float time;
+    private float timer = 5;
+
+    public static Vector3 playrDir;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,29 +41,31 @@ public class PlayerBall : MonoBehaviour
     void Update()
     {
         if (!isStop)
-            Shot();
+            return;
         if (isStop)
+        {
             Movement();
+            MoveTime();
+        }  
     }
 
-    void Shot()
+    public void TouchDown()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Instantiate(ballRot, new Vector3(-2, -5, 0), Quaternion.identity);
-        }
-        if (Input.GetMouseButton(0))
-        {
-            
-            dir = BallRot.dir;
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            isStop = true;
-            gameObject.GetComponent<Rigidbody2D>().AddForce(dir * Speed, ForceMode2D.Impulse);
-            Speed = 500;
-        }
+        playrDir = transform.position;
+        Instantiate(ballRot, new Vector3(playrDir.x, playrDir.y, 0), Quaternion.identity);
 
+    }
+
+    public void Touch()
+    {
+        dir = BallRot.dir;
+    }
+
+    public void TouchUp()
+    {
+        isStop = true;
+        gameObject.GetComponent<Rigidbody2D>().AddForce(dir * Speed, ForceMode2D.Impulse);
+        Speed = 500;
     }
 
     void Movement()
@@ -90,12 +97,41 @@ public class PlayerBall : MonoBehaviour
 
     void ResetBall()
     {
+        transPosCheck();
+
         isStop = false;
         Speed = 0;
         rigid.velocity = dir * Speed * Time.deltaTime;
+
         goingDown = false;
         goingLeft = false;
         goingRight = false;
-        transform.position = new Vector3(transform.position.x, -3, 0);
+
+        time = 0;
+        
+    }
+
+    void transPosCheck()
+    {
+        if (transform.position.x > 5)
+            transform.position = new Vector3(4.9f, -3, 0);
+        else if (transform.position.x < -5)
+            transform.position = new Vector3(-4.9f, -3, 0);
+        else
+            transform.position = new Vector3(transform.position.x, -3, 0);
+    }
+
+    void MoveTime()
+    {
+
+        if(time > timer)
+        {
+            Speed *= 2;
+            time = 0;
+        }
+        else
+        {
+            time += Time.deltaTime;
+        }
     }
 }

@@ -7,7 +7,6 @@ public class BallRot : MonoBehaviour
     [SerializeField]
     private GameObject bullet;
 
-    public float moveSpeed = 2f;
     public float CircleScale = 5f;
 
     private int iteration = 90;
@@ -31,7 +30,7 @@ public class BallRot : MonoBehaviour
 
     void BulletCircle()
     {
-        transform.position = new Vector3(dir.x, dir.y - 2);
+        transform.position = new Vector3(dir.x + PlayerBall.playrDir.x, dir.y + PlayerBall.playrDir.y);
         dir = new Vector2(Mathf.Cos(iteration * Mathf.Deg2Rad), Mathf.Sin(iteration * Mathf.Deg2Rad));
         if (isLeft == false)
         {
